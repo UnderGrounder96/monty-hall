@@ -8,7 +8,7 @@
 
 # print("\U0001F914") # thinking emoji, best emoji
 
-retries = 1
+retries = 0
 
 usr_choice = 99  # dummy initial value
 
@@ -35,6 +35,7 @@ def usr_checker():
 
     while usr_choice < 0 or usr_choice > 2:
         print(f"You have selected a wrong option: {usr_choice} !")
+        print(f"{retries} chance(s) available...")
         print()
 
         usr_choice_picker("0-2")
