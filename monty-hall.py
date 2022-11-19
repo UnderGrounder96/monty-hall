@@ -3,26 +3,42 @@
 # Author: undergrounder96
 # Monty Hall problem, with emoji
 
+from time import sleep
+from random import randint
+
 # Emojis unicode from: https://unicode.org/emoji/charts/full-emoji-list.html
 # TODO: convert the "+" from unicode to zero (3x)
 
 # print("\U0001F914") # thinking emoji, best emoji
 
-retries = 0
+retries = 1
 
 usr_choice = 99  # dummy initial value
 
 prize = "\U0001F3CE"  # F1 car
 goat = "\U0001F410"  # goat
 
-doors = [goat, prize, goat]
+doors = {k: goat for k in range(0, 3)}
 
 
-def usr_choice_picker(s):
+def randomize_prize():
+    global doors
+
+    tmp = len(doors) - 1
+
+    doors[randint(0, tmp)] = prize
+
+    # for debugging only :)
+    # print(f"doors = {doors}")
+
+
+def usr_choice_picker():
     global usr_choice
 
+    print()
+
     try:
-        usr_choice = int(input(f"Please select a door between [{s}]: "))
+        usr_choice = int(input(f"Please select a door {list(doors.keys())}: "))
     except (Exception) as e:
         print(e.__str__())
         print()
@@ -30,39 +46,45 @@ def usr_choice_picker(s):
         exit(2)
 
 
-def usr_checker():
+def usr_helper():
     global usr_choice, retries
 
-    while usr_choice < 0 or usr_choice > 2:
-        print(f"You have selected a wrong option: {usr_choice} !")
-        print(f"{retries} chance(s) available...")
-        print()
-
-        usr_choice_picker("0-2")
-
-        if retries <= 0:
-            print("You ran out of retries. Good bye!")
-            exit(1)
-
-        retries -= 1
-
-
-def usr_helper():
     print(f"You have picked the door: {usr_choice}...")
     print()
 
-    if doors[usr_choice] == prize:
-        # Try tricking the player
-        pass
+    for trick_usr in range(0, 3):
+        if trick_usr != usr_choice and doors[trick_usr] == goat:
+            print(
+                f"Behind the door {trick_usr} there is: {doors.pop(trick_usr)}")
 
-    print(f"Behind the door {usr_choice} there is: {doors[usr_choice]}")
+            print("Would you like to change doors?")
+
+            if str(input("[y/n]: ")).lower() == "y":
+                usr_choice_picker()
+            else:
+                print("Assuming no changes...")
+
+            print("Unveiling...")
+            sleep(0.7)
+
+            print(
+                f"\nBehind the door {usr_choice} there is: {doors[usr_choice]}\n")
+
+            if doors[usr_choice] == prize:
+                print("Congratulations. You won the prize!!!")
+
+            else:
+                print(f"Better luck next time. You have lost the {prize}")
+
+            break
 
 
 def main():
     """This function calls all other functions"""
 
-    usr_choice_picker("0-2")
-    usr_checker()
+    randomize_prize()
+
+    usr_choice_picker()
     usr_helper()
 
     exit(0)
