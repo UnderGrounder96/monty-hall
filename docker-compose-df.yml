@@ -1,0 +1,6 @@
+---
+services:
+  monty:
+    build: ./
+    volumes:
+      - ".:/code"

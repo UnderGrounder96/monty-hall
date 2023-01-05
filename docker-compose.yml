@@ -1,0 +1,8 @@
+---
+services:
+  monty:
+    image: python:alpine
+    working_dir: /code
+    volumes:
+      - ".:/code"
+    command: python3 monty-hall.py
